@@ -11,6 +11,8 @@ struct WarpServer {
     port: u16,
 }
 
+// https://doc.rust-lang.org/book/ch03-02-data-types.html < self reference.
+
 impl WarpServer {
     fn new(host: [u8; 4], port: u16) -> Self {
         WarpServer { host, port }
