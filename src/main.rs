@@ -12,6 +12,7 @@ struct WarpServer {
 }
 
 // https://doc.rust-lang.org/book/ch03-02-data-types.html < self reference.
+// https://doc.rust-lang.org/book/ch17-01-what-is-oo.html < self reference.
 
 impl WarpServer {
     fn new(host: [u8; 4], port: u16) -> Self {
