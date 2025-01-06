@@ -1,5 +1,7 @@
-use warp::{Filter, Reply};
 use serde::{Deserialize, Serialize};
+use warp::{Filter, Reply};
+use warp::reply::json;
+use serde_json::json;
 
 #[derive(Deserialize, Serialize)]
 struct Message {
@@ -36,11 +38,20 @@ impl WarpServer {
         let post_message = warp::path("message")
             .and(warp::post())
             .and(warp::body::json())
+            .map(|message: Message| format!("Received message: {}", message.content));
+
+        let post_message_json = warp::path("json")
+            .and(warp::post())
+            .and(warp::body::json())
             .map(|message: Message| {
-                format!("Received message: {}", message.content)
+                let response = json!({
+                    "status": "success",
+                    "message": message.content
+                });
+                json(&response)
             });
 
-        post_message
+        post_message.or(post_message_json)
     }
 
     fn routes(&self) -> impl Filter<Extract = impl Reply, Error = warp::Rejection> + Clone {
@@ -49,9 +60,7 @@ impl WarpServer {
 
     async fn run(&self) {
         let routes = self.routes();
-        warp::serve(routes)
-            .run((self.host, self.port))
-            .await;
+        warp::serve(routes).run((self.host, self.port)).await;
     }
 }
 
