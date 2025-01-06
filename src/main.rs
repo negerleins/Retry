@@ -43,10 +43,12 @@ impl WarpServer {
         let post_message_json = warp::path("json")
             .and(warp::post())
             .and(warp::body::json())
-            .map(|message: Message| {
+            .and(warp::header("user-agent"))
+            .map(|message: Message, agent: String| {
                 let response = json!({
                     "status": "success",
-                    "message": message.content
+                    "message": message.content,
+                    "agent": agent
                 });
                 json(&response)
             });
